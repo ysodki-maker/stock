@@ -98,6 +98,7 @@ const ProductList = () => {
       fournisseur: selectedFilter === "fournisseur" ? filterValue : null,
       type_produit: selectedFilter === "type_produit" ? filterValue : null,
       design: selectedFilter === "design" ? filterValue : null,
+      couleur: selectedFilter === "couleur" ? filterValue : null,
     });
     setShowFilters(false);
     setArrivage(false);
@@ -115,7 +116,8 @@ const ProductList = () => {
     activeFilters.category ||
     activeFilters.fournisseur ||
     activeFilters.type_produit ||
-    activeFilters.design;
+    activeFilters.design ||
+    activeFilters.couleur;
 
   // Helper pour extraire les meta données
   const getMeta = (product, metaKey) => {

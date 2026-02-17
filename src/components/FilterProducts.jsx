@@ -24,7 +24,7 @@ export default function FilterProducts({
             </span>
           </div>
 
-          <div className="grid grid-cols-4 gap-5">
+          <div className="grid grid-cols-3 gap-5">
             {/* Filtre Catégorie */}
             <div
               className={`group relative rounded-xl border-2 transition-all duration-200 ${
@@ -68,92 +68,6 @@ export default function FilterProducts({
                 </select>
               </div>
             </div>
-            {/* Filtre Fournisseur */}
-            <div
-              className={`group relative rounded-xl border-2 transition-all duration-200 ${
-                selectedFilter === "fournisseur"
-                  ? "border-blue-500 bg-gradient-to-br from-blue-50 to-cyan-50 shadow-lg scale-105"
-                  : "border-slate-200 hover:border-blue-200 hover:shadow-md"
-              }`}
-            >
-              <div className="p-5">
-                <label className="block text-xs font-bold text-slate-700 mb-3 flex items-center gap-2.5">
-                  <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 ${
-                      selectedFilter === "fournisseur"
-                        ? "bg-gradient-to-br from-blue-600 to-cyan-600 shadow-lg"
-                        : "bg-slate-100 group-hover:bg-blue-100"
-                    }`}
-                  >
-                    <Box
-                      className={`w-5 h-5 ${
-                        selectedFilter === "fournisseur"
-                          ? "text-white"
-                          : "text-slate-500"
-                      }`}
-                    />
-                  </div>
-                  <span className="uppercase tracking-wider">Fournisseur</span>
-                </label>
-                <select
-                  value={selectedFilter === "fournisseur" ? filterValue : ""}
-                  onChange={(e) =>
-                    handleFilterChange("fournisseur", e.target.value)
-                  }
-                  className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-lg focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 bg-white text-sm font-medium transition-all"
-                >
-                  <option value="">Choisir...</option>
-                  {filtersData.fournisseurs?.map((f) => (
-                    <option key={f.id} value={f.slug}>
-                      {f.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            {/* Filtre Type de produit */}
-            <div
-              className={`group relative rounded-xl border-2 transition-all duration-200 ${
-                selectedFilter === "type_produit"
-                  ? "border-purple-500 bg-gradient-to-br from-purple-50 to-pink-50 shadow-lg scale-105"
-                  : "border-slate-200 hover:border-purple-200 hover:shadow-md"
-              }`}
-            >
-              <div className="p-5">
-                <label className="block text-xs font-bold text-slate-700 mb-3 flex items-center gap-2.5">
-                  <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 ${
-                      selectedFilter === "type_produit"
-                        ? "bg-gradient-to-br from-purple-600 to-pink-600 shadow-lg"
-                        : "bg-slate-100 group-hover:bg-purple-100"
-                    }`}
-                  >
-                    <Package2
-                      className={`w-5 h-5 ${
-                        selectedFilter === "type_produit"
-                          ? "text-white"
-                          : "text-slate-500"
-                      }`}
-                    />
-                  </div>
-                  <span className="uppercase tracking-wider">Type Produit</span>
-                </label>
-                <select
-                  value={selectedFilter === "type_produit" ? filterValue : ""}
-                  onChange={(e) =>
-                    handleFilterChange("type_produit", e.target.value)
-                  }
-                  className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-lg focus:border-purple-500 focus:outline-none focus:ring-4 focus:ring-purple-100 bg-white text-sm font-medium transition-all"
-                >
-                  <option value="">Choisir...</option>
-                  {filtersData.types_produits?.map((t) => (
-                    <option key={t.id} value={t.slug}>
-                      {t.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
             {/* Filtre Design */}
             <div
               className={`group relative rounded-xl border-2 transition-all duration-200 ${
@@ -188,6 +102,47 @@ export default function FilterProducts({
                 >
                   <option value="">Choisir...</option>
                   {filtersData.design?.map((t) => (
+                    <option key={t.id} value={t.slug}>
+                      {t.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {/* Filtre Couleurs */}
+            <div
+              className={`group relative rounded-xl border-2 transition-all duration-200 ${
+                selectedFilter === "couleur"
+                  ? " border-purple-500 bg-gradient-to-br from-purple-50 to-pink-50 shadow-lg scale-105"
+                  : "border-slate-200 hover:border-purple-200 hover:shadow-md"
+              }`}
+            >
+              <div className="p-5">
+                <label className="block text-xs font-bold text-slate-700 mb-3 flex items-center gap-2.5">
+                  <div
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 ${
+                      selectedFilter === "couleur"
+                        ? "bg-gradient-to-br from-purple-600 to-pink-600 shadow-lg"
+                        : "bg-slate-100 group-hover:bg-purple-100"
+                    }`}
+                  >
+                    <Package2
+                      className={`w-5 h-5 ${
+                        selectedFilter === "couleur"
+                          ? "text-white"
+                          : "text-slate-500"
+                      }`}
+                    />
+                  </div>
+                  <span className="uppercase tracking-wider">Couleurs</span>
+                </label>
+                <select
+                  value={selectedFilter === "couleur" ? filterValue : ""}
+                  onChange={(e) => handleFilterChange("couleur", e.target.value)}
+                  className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-lg focus:border-purple-500 focus:outline-none focus:ring-4 focus:ring-purple-100 bg-white text-sm font-medium transition-all"
+                >
+                  <option value="">Choisir...</option>
+                  {filtersData.couleur?.map((t) => (
                     <option key={t.id} value={t.slug}>
                       {t.name}
                     </option>

@@ -130,6 +130,7 @@ export const ProductProvider = ({ children }) => {
         fournisseur = null,
         type_produit = null,
         design = null,
+        couleur=null
       },
       pageNum = 1
     ) => {
@@ -144,6 +145,7 @@ export const ProductProvider = ({ children }) => {
       if (fournisseur) params.append("fournisseur", fournisseur);
       if (type_produit) params.append("type_produit", type_produit);
       if (design) params.append("design", design);
+      if (couleur) params.append("couleur", couleur);
       try {
         const res = await fetch(
           `${API_BASE}/products/filter?${params.toString()}`
@@ -163,6 +165,7 @@ export const ProductProvider = ({ children }) => {
           fournisseur,
           type_produit,
           design,
+          couleur
         });
       } catch (err) {
         console.error(err);
@@ -187,7 +190,8 @@ export const ProductProvider = ({ children }) => {
       if (
         activeFilters.category ||
         activeFilters.fournisseur ||
-        activeFilters.type_produit
+        activeFilters.type_produit ||
+        activeFilters.couleur
       ) {
         // Filtres actifs → paginer avec les filtres
         filterProducts(activeFilters, pageNum);
@@ -220,6 +224,7 @@ export const ProductProvider = ({ children }) => {
       fournisseur: null,
       type_produit: null,
       design: null,
+      couleur:null
     });
     setActiveSearch(""); // ✅ reset la recherche active aussi
     setIsSearching(false);

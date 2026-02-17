@@ -627,7 +627,7 @@ const ProductDetail = () => {
               <div className="space-y-2 p-4 bg-slate-50 rounded-xl">
                 <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
                   <Tag className="w-4 h-4" />
-                  Nombre de pièces
+                  UGS Interne
                 </div>
                 <p className="text-slate-900 font-bold text-lg">
                   {getMeta("_nombre_pieces") || "-"}
