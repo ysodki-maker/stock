@@ -321,7 +321,7 @@ const drawPage = async (doc, p, idx, total, opts) => {
     doc.text(dl2[0], PAD, FOOTER_Y + 5.5);
   }
   doc.setFontSize(5); doc.setFont("helvetica", "normal"); st(doc, C.stone);
-  doc.text("stockbackup.cosinus.ma", PW / 2, FOOTER_Y + 5.5, { align: "center" });
+  doc.text("s.cosinus.ma", PW / 2, FOOTER_Y + 5.5, { align: "center" });
 
   doc.setFontSize(5); doc.setFont("helvetica", "normal"); st(doc, C.silver);
   doc.text(`${idx + 1} / ${total}`, PW - PAD, FOOTER_Y + 5.5, { align: "right" });
@@ -1017,4 +1017,5 @@ const ProductPDFPage = () => {
 };
 
 export default ProductPDFPage;
+
 
