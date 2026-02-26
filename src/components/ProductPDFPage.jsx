@@ -38,25 +38,20 @@ const C = {
 /* ═══════════════════════════════════════════════════════
    PROXY IMAGE
 ═══════════════════════════════════════════════════════ */
-const WP_UPLOADS = "https://stockbackup.cosinus.ma/wp-content/uploads";
-const PROXY_BASE  = "/wp-images";
-const toProxyUrl  = (url) => (!url ? null : url.startsWith(WP_UPLOADS) ? url.replace(WP_UPLOADS, PROXY_BASE) : url);
 
-const loadImage = (originalUrl) =>
+/* ═══════════════════════════════════════════════════════
+   CHARGEMENT IMAGE — URL directe (CORS activé sur WP)
+═══════════════════════════════════════════════════════ */
+const loadImage = (url) =>
   new Promise((resolve) => {
-    if (!originalUrl) return resolve(null);
-    fetch(toProxyUrl(originalUrl))
+    if (!url) return resolve(null);
+    fetch(url)
       .then((r) => { if (!r.ok) throw new Error(); return r.blob(); })
       .then((blob) => {
         const reader = new FileReader();
         reader.onload = (e) => {
           const img = new Image();
-          img.onload = () => {
-            const c = document.createElement("canvas");
-            c.width = img.naturalWidth; c.height = img.naturalHeight;
-            c.getContext("2d").drawImage(img, 0, 0);
-            resolve({ b64: c.toDataURL("image/jpeg", 0.95), w: img.naturalWidth, h: img.naturalHeight });
-          };
+          img.onload = () => resolve({ b64: e.target.result, w: img.naturalWidth, h: img.naturalHeight });
           img.onerror = () => resolve(null);
           img.src = e.target.result;
         };
@@ -65,7 +60,6 @@ const loadImage = (originalUrl) =>
       })
       .catch(() => resolve(null));
   });
-
 /* ═══════════════════════════════════════════════════════
    HELPERS
 ═══════════════════════════════════════════════════════ */
@@ -1020,4 +1014,3 @@ const ProductPDFPage = () => {
 };
 
 export default ProductPDFPage;
-
