@@ -33,7 +33,6 @@ export const ProductProvider = ({ children }) => {
   });
 
   const [isSearching, setIsSearching] = useState(false);
-  // ✅ AJOUT : mémoriser le terme de recherche actif pour la pagination
   const [activeSearch, setActiveSearch] = useState("");
 
   /* =======================
@@ -52,10 +51,10 @@ export const ProductProvider = ({ children }) => {
             searchTerm.trim()
           )}`;
           setIsSearching(true);
-          setActiveSearch(searchTerm.trim()); // ✅ mémoriser le terme actif
+          setActiveSearch(searchTerm.trim());
         } else {
           setIsSearching(false);
-          setActiveSearch(""); // ✅ reset si pas de recherche
+          setActiveSearch("");
         }
 
         const res = await fetch(url);
@@ -130,7 +129,7 @@ export const ProductProvider = ({ children }) => {
         fournisseur = null,
         type_produit = null,
         design = null,
-        couleur=null
+        couleur = null,
       },
       pageNum = 1
     ) => {
@@ -146,6 +145,7 @@ export const ProductProvider = ({ children }) => {
       if (type_produit) params.append("type_produit", type_produit);
       if (design) params.append("design", design);
       if (couleur) params.append("couleur", couleur);
+
       try {
         const res = await fetch(
           `${API_BASE}/products/filter?${params.toString()}`
@@ -165,7 +165,7 @@ export const ProductProvider = ({ children }) => {
           fournisseur,
           type_produit,
           design,
-          couleur
+          couleur,
         });
       } catch (err) {
         console.error(err);
@@ -193,13 +193,10 @@ export const ProductProvider = ({ children }) => {
         activeFilters.type_produit ||
         activeFilters.couleur
       ) {
-        // Filtres actifs → paginer avec les filtres
         filterProducts(activeFilters, pageNum);
       } else if (activeSearch) {
-        // ✅ Recherche active → paginer avec le terme de recherche
         fetchProducts(pageNum, perPage, activeSearch);
       } else {
-        // Aucun filtre ni recherche → pagination normale
         fetchProducts(pageNum, perPage);
       }
     },
@@ -224,9 +221,9 @@ export const ProductProvider = ({ children }) => {
       fournisseur: null,
       type_produit: null,
       design: null,
-      couleur:null
+      couleur: null,
     });
-    setActiveSearch(""); // ✅ reset la recherche active aussi
+    setActiveSearch("");
     setIsSearching(false);
     fetchProducts(1, perPage);
   };
@@ -263,7 +260,6 @@ export const ProductProvider = ({ children }) => {
 
         const data = await res.json();
 
-        // 🔄 Rafraîchir la liste après update
         await fetchProducts(page, perPage);
 
         return data;
@@ -276,6 +272,87 @@ export const ProductProvider = ({ children }) => {
       }
     },
     [fetchProducts, page, perPage]
+  );
+
+  /* =======================
+   * UPDATE PRODUCT IMAGE
+   ======================= */
+  const updateProductImage = useCallback(
+    async (productId, source, options = {}) => {
+      /**
+       * @param {number}      productId        - ID du produit WooCommerce
+       * @param {File|string} source           - Fichier (File object) ou URL externe (string)
+       * @param {object}      options
+       * @param {boolean}     options.gallery  - true = ajouter à la galerie
+       *                                         false (défaut) = remplacer l'image principale
+       */
+      setLoading(true);
+      setError(null);
+
+      try {
+        const { gallery = false } = options;
+        const endpoint = `${API_BASE}/products/${productId}/image${
+          gallery ? "?gallery=true" : ""
+        }`;
+
+        let res;
+
+        if (source instanceof File) {
+          // ── Upload binaire multipart ────────────────────────────────────
+          const formData = new FormData();
+          formData.append("image", source);
+
+          res = await fetch(endpoint, {
+            method: "POST",
+            body: formData,
+            // ⚠️ Ne pas forcer Content-Type : le navigateur gère le boundary
+          });
+        } else if (typeof source === "string" && source.trim() !== "") {
+          // ── URL distante ────────────────────────────────────────────────
+          res = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ image_url: source.trim() }),
+          });
+        } else {
+          throw new Error("Source invalide : fournissez un File ou une URL.");
+        }
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData?.message || "Erreur mise à jour de l'image");
+        }
+
+        const data = await res.json();
+
+        // 🔄 Mise à jour locale optimiste — évite un refetch complet
+        setProducts((prev) =>
+          prev.map((p) => {
+            if (p.id !== productId) return p;
+
+            if (gallery) {
+              return {
+                ...p,
+                images: [...(p.images || []), data.image_url],
+              };
+            } else {
+              const updatedImages = [...(p.images || [])];
+              updatedImages[0] = data.image_url;
+              return { ...p, images: updatedImages };
+            }
+          })
+        );
+
+        return data; // { success, product_id, attachment_id, image_url, type, message }
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
   );
 
   /* =======================
@@ -308,16 +385,16 @@ export const ProductProvider = ({ children }) => {
 
         fetchEnArrivageProducts,
         updateProductMeta,
+        updateProductImage,       // ← NOUVEAU
 
         isSearching,
         setIsSearching,
 
-        // ✅ AJOUT : exposer activeSearch pour les composants qui en auraient besoin
         activeSearch,
         setActiveSearch,
       }}
     >
       {children}
     </ProductContext.Provider>
-  ); 
-}; 
+  );
+};

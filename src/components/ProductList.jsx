@@ -99,6 +99,7 @@ const ProductList = () => {
       type_produit: selectedFilter === "type_produit" ? filterValue : null,
       design: selectedFilter === "design" ? filterValue : null,
       couleur: selectedFilter === "couleur" ? filterValue : null,
+
     });
     setShowFilters(false);
     setArrivage(false);

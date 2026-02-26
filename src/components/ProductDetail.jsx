@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import EditProductModal from "./EditProductModal"; // Ajustez le chemin selon votre structure
+import EditImageModal from "./EditImageModal";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -30,8 +31,28 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [showImageModal, setShowImageModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-    const navigate = useNavigate();
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const handleImageUpdated = (newImageUrl, gallery) => {
+    setProduct((prev) => {
+      if (!prev) return prev;
 
+      if (gallery) {
+        return {
+          ...prev,
+          images: [...prev.images, newImageUrl],
+        };
+      }
+
+      // 🔥 Remplacement image principale
+      return {
+        ...prev,
+        images: [newImageUrl, ...prev.images.slice(1)],
+      };
+    });
+
+    setSelectedImage(0); // revenir sur l'image principale
+  };
   const handleSaveProduct = async (formData) => {
     try {
       const updateData = {};
@@ -63,7 +84,7 @@ const ProductDetail = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updateData),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -73,7 +94,7 @@ const ProductDetail = () => {
 
       // reload produit
       const productResponse = await fetch(
-        `https://stockbackup.cosinus.ma/wp-json/wc-full-api/v1/products/${product.id}`
+        `https://stockbackup.cosinus.ma/wp-json/wc-full-api/v1/products/${product.id}`,
       );
       setProduct(await productResponse.json());
     } catch (err) {
@@ -87,7 +108,7 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
-          `https://stockbackup.cosinus.ma/wp-json/wc-full-api/v1/products/${id}`
+          `https://stockbackup.cosinus.ma/wp-json/wc-full-api/v1/products/${id}`,
         );
         const data = await response.json();
 
@@ -199,13 +220,22 @@ const ProductDetail = () => {
               <ArrowLeft className="w-5 h-5" />
               <span className="hidden sm:inline">Retour</span>
             </button>
-            <button
-              className="px-4 py-2 text-slate-700 hover:text-blue-600 bg-white hover:bg-blue-50 rounded-xl font-medium transition-all border border-slate-200 hover:border-blue-300 shadow-sm hover:shadow flex items-center gap-2"
-              onClick={() => setShowEditModal(true)}
-            >
-              <Edit3 className="w-4 h-4" />
-              <span className="hidden sm:inline">Modifier</span>
-            </button>
+            <div className="flex items-center justify-between gap-2">
+              <button
+                className="px-4 py-2 text-slate-700 hover:text-blue-600 bg-white hover:bg-blue-50 rounded-xl font-medium transition-all border border-slate-200 hover:border-blue-300 shadow-sm hover:shadow flex items-center gap-2"
+                onClick={() => setShowEditModal(true)}
+              >
+                <Edit3 className="w-4 h-4" />
+                <span className="hidden sm:inline">Modifier</span>
+              </button>
+              <button
+                className="px-4 py-2 text-slate-700 hover:text-blue-600 bg-white hover:bg-blue-50 rounded-xl font-medium transition-all border border-slate-200 hover:border-blue-300 shadow-sm hover:shadow flex items-center gap-2"
+                onClick={() => setImageModalOpen(true)}
+              >
+                <Edit3 className="w-4 h-4" />
+                <span className="hidden sm:inline">Modifier L'image</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -382,7 +412,7 @@ const ProductDetail = () => {
                             <div className="flex items-baseline gap-2.5">
                               <span className="text-3xl font-bold text-emerald-900 tabular-nums">
                                 {parseFloat(stockAcheter).toLocaleString(
-                                  "fr-FR"
+                                  "fr-FR",
                                 )}
                               </span>
                               <span className="text-base font-semibold text-emerald-700">
@@ -429,7 +459,7 @@ const ProductDetail = () => {
                             <div className="flex items-baseline gap-2.5">
                               <span className="text-3xl font-bold text-red-900 tabular-nums">
                                 {parseFloat(stockSortie).toLocaleString(
-                                  "fr-FR"
+                                  "fr-FR",
                                 )}
                               </span>
                               <span className="text-base font-semibold text-red-700">
@@ -447,15 +477,12 @@ const ProductDetail = () => {
                   // const reservation = getMeta("_reservation");
                   // const hasReservation =
                   //   reservation && reservation !== "" && reservation !== "-";
-
                   // return hasReservation ? (
                   //   <>
                   //     <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent my-4"></div>
-
                   //     <div className="group relative overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border-2 border-amber-300 hover:border-amber-400 transition-all duration-300 hover:shadow-md">
                   //       {/* Effet de fond animé */}
                   //       <div className="absolute top-0 right-0 w-32 h-32 bg-amber-100 rounded-full -mr-16 -mt-16 opacity-30 group-hover:opacity-50 transition-opacity"></div>
-
                   //       {/* Badge "Réservé" en coin */}
                   //       <div className="absolute top-3 right-3">
                   //         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-200 text-amber-900 shadow-sm">
@@ -463,13 +490,11 @@ const ProductDetail = () => {
                   //           Réservé
                   //         </span>
                   //       </div>
-
                   //       <div className="relative flex items-center gap-4 p-4">
                   //         {/* Icône */}
                   //         <div className="flex-shrink-0 p-3 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
                   //           <Calendar className="w-6 h-6 text-white" />
                   //         </div>
-
                   //         {/* Contenu */}
                   //         <div className="flex-1 pr-16">
                   //           <div className="flex items-center gap-2 mb-1">
@@ -477,7 +502,6 @@ const ProductDetail = () => {
                   //               Réservation
                   //             </p>
                   //           </div>
-
                   //           <div className="flex items-center gap-2">
                   //             <p className="text-lg font-bold text-amber-900 leading-tight">
                   //               {reservation}
@@ -671,7 +695,7 @@ const ProductDetail = () => {
                 <p className="text-slate-900 font-bold text-lg">
                   {getMeta("_stock_acheter") || "-"}
                 </p>
-              </div>              
+              </div>
             </div>
           </div>
 
@@ -756,7 +780,7 @@ const ProductDetail = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedImage((prev) =>
-                  prev === 0 ? product.images.length - 1 : prev - 1
+                  prev === 0 ? product.images.length - 1 : prev - 1,
                 );
               }}
               className="absolute left-4 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-all backdrop-blur-sm"
@@ -779,7 +803,7 @@ const ProductDetail = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedImage((prev) =>
-                  prev === product.images.length - 1 ? 0 : prev + 1
+                  prev === product.images.length - 1 ? 0 : prev + 1,
                 );
               }}
               className="absolute right-4 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-all backdrop-blur-sm"
@@ -814,6 +838,13 @@ const ProductDetail = () => {
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
         onSave={handleSaveProduct}
+      />
+      <EditImageModal
+        product={product}
+        isOpen={imageModalOpen}
+        onClose={() => setImageModalOpen(false)}
+        onSave={handleSaveProduct}
+        onImageUpdated={handleImageUpdated}
       />
     </div>
   );

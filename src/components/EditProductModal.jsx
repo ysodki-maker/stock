@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect } from "react";
 import {
   X,
@@ -179,8 +180,8 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
                   product?.stock_quantity > 10
                     ? "bg-emerald-100"
                     : product?.stock_quantity > 0
-                    ? "bg-amber-100"
-                    : "bg-rose-100"
+                      ? "bg-amber-100"
+                      : "bg-rose-100"
                 }`}
               >
                 <ShoppingCart
@@ -188,8 +189,8 @@ const EditProductModal = ({ product, isOpen, onClose, onSave }) => {
                     product?.stock_quantity > 10
                       ? "text-emerald-600"
                       : product?.stock_quantity > 0
-                      ? "text-amber-600"
-                      : "text-rose-600"
+                        ? "text-amber-600"
+                        : "text-rose-600"
                   }`}
                 />
               </div>
