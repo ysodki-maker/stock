@@ -45,17 +45,20 @@ const C = {
 const loadImage = (url) =>
   new Promise((resolve) => {
     if (!url) return resolve(null);
-    fetch(url)
-      .then((r) => { if (!r.ok) throw new Error(); return r.blob(); })
-      .then((blob) => {
+
+    const proxyUrl =
+      `https://stockbackup.cosinus.ma/wp-json/cors/v1/image?url=${encodeURIComponent(url)}`;
+
+    fetch(proxyUrl)
+      .then(r => r.blob())
+      .then(blob => {
         const reader = new FileReader();
         reader.onload = (e) => {
           const img = new Image();
-          img.onload = () => resolve({ b64: e.target.result, w: img.naturalWidth, h: img.naturalHeight });
-          img.onerror = () => resolve(null);
+          img.onload = () =>
+            resolve({ b64: e.target.result, w: img.naturalWidth, h: img.naturalHeight });
           img.src = e.target.result;
         };
-        reader.onerror = () => resolve(null);
         reader.readAsDataURL(blob);
       })
       .catch(() => resolve(null));
@@ -1014,3 +1017,4 @@ const ProductPDFPage = () => {
 };
 
 export default ProductPDFPage;
+
