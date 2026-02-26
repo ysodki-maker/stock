@@ -192,7 +192,6 @@ const drawPage = async (doc, p, idx, total, opts) => {
   const nbrPiece    = val(getMeta(p, "_nombre_pieces") || getMeta(p, "_nombre_pieces"));
   const rouleaux    = val(getMeta(p, "_rouleaux_produit") || getMeta(p, "_rouleaux_produit") || getMeta(p, "_rouleaux_produit"));
   const { length: dl, width: dw, height: dh } = p.dimensions || {};
-
   const specs = [
     { label: "Catégorie",      value: category },
     { label: "Type",           value: typeProd },
@@ -1021,3 +1020,4 @@ const ProductPDFPage = () => {
 };
 
 export default ProductPDFPage;
+
