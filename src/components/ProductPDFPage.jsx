@@ -188,9 +188,9 @@ const drawPage = async (doc, p, idx, total, opts) => {
   const couleur     = getTax(p, "couleur");
   const localisation= getMeta(p, "_localisation_produit");
   const stockQty    = p.stock_quantity ?? 0;
-  const unite       = val(getMeta(p, "_unite") || getMeta(p, "unite") || getTax(p, "unite"));
-  const nbrPiece    = val(getMeta(p, "_nbr_piece") || getMeta(p, "nbr_piece"));
-  const rouleaux    = val(getMeta(p, "_rouleaux") || getMeta(p, "rouleaux") || getMeta(p, "_nombre_rouleaux"));
+  const unite       = val(getMeta(p, "_unite_produit") || getMeta(p, "_unite_produit") || getTax(p, "_unite_produit"));
+  const nbrPiece    = val(getMeta(p, "_nombre_pieces") || getMeta(p, "_nombre_pieces"));
+  const rouleaux    = val(getMeta(p, "_rouleaux_produit") || getMeta(p, "_rouleaux_produit") || getMeta(p, "_rouleaux_produit"));
   const { length: dl, width: dw, height: dh } = p.dimensions || {};
 
   const specs = [
@@ -1013,7 +1013,7 @@ const ProductPDFPage = () => {
       {/* ════════════ FOOTER PAGE ════════════ */}
       <footer style={{ padding: "24px 32px", textAlign: "center", borderTop: "1px solid #e0dbd2" }}>
         <p style={{ fontSize: 12, color: "#b0a898", letterSpacing: "0.06em" }}>
-          CATALOGUE PRODUITS · stockbackup.cosinus.ma
+          CATALOGUE PRODUITS · s.cosinus.ma
         </p>
       </footer>
     </div>
