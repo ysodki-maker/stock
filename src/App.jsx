@@ -3,7 +3,7 @@ import { ProductProvider } from './context/ProductContext';
 import ProductList from './components/ProductList';
 import ProductDetail from './components/ProductDetail';
 import ProductPDFPage from "./components/ProductPDFPage";
-
+import DolibarrSync from './components/Dolibarrsync';
 function App() {
   return (
     <ProductProvider>
@@ -12,6 +12,7 @@ function App() {
           <Route path="/" element={<ProductList />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/pdf" element={<ProductPDFPage />} />
+          <Route path="/dolibarr" element={<DolibarrSync/>}/>
         </Routes>
       </Router>
     </ProductProvider>
