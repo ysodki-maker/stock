@@ -3,7 +3,7 @@ import { ProductProvider } from './context/ProductContext';
 import ProductList from './components/ProductList';
 import ProductDetail from './components/ProductDetail';
 import ProductPDFPage from "./components/ProductPDFPage";
-import DolibarrSync from './components/Dolibarrsync';
+import DolibarrSync from './components/DolibarrSync';
 function App() {
   return (
     <ProductProvider>
