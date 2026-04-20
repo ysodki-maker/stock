@@ -1,1 +1,21 @@
 @import "tailwindcss";
+
+@keyframes arrivage-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.35); }
+  50%       { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); }
+}
+
+@keyframes arrivage-slide {
+  0%   { transform: translateX(-3px); opacity: 0.4; }
+  60%  { transform: translateX(2px);  opacity: 1;   }
+  100% { transform: translateX(0px);  opacity: 1;   }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .arrivage-badge {
+    animation: arrivage-pulse 2s ease-in-out infinite;
+  }
+  .arrivage-icon {
+    animation: arrivage-slide 2s ease-in-out infinite;
+  }
+}
