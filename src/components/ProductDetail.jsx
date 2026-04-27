@@ -23,6 +23,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import EditProductModal from "./EditProductModal"; // Ajustez le chemin selon votre structure
 import EditImageModal from "./EditImageModal";
+import EditDetailsModal from "./EditDetailsModal";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -33,6 +34,8 @@ const ProductDetail = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const navigate = useNavigate();
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+
   const handleImageUpdated = (newImageUrl, gallery) => {
     setProduct((prev) => {
       if (!prev) return prev;
@@ -226,7 +229,7 @@ const ProductDetail = () => {
                 onClick={() => setShowEditModal(true)}
               >
                 <Edit3 className="w-4 h-4" />
-                <span className="hidden sm:inline">Modifier</span>
+                <span className="hidden sm:inline">Modifier le Stock</span>
               </button>
               <button
                 className="px-4 py-2 text-slate-700 hover:text-blue-600 bg-white hover:bg-blue-50 rounded-xl font-medium transition-all border border-slate-200 hover:border-blue-300 shadow-sm hover:shadow flex items-center gap-2"
@@ -234,6 +237,13 @@ const ProductDetail = () => {
               >
                 <Edit3 className="w-4 h-4" />
                 <span className="hidden sm:inline">Modifier L'image</span>
+              </button>
+              <button
+                className="px-4 py-2 text-slate-700 hover:text-blue-600 bg-white hover:bg-blue-50 rounded-xl font-medium transition-all border border-slate-200 hover:border-blue-300 shadow-sm hover:shadow flex items-center gap-2"
+                onClick={() => setDetailsModalOpen(true)}
+              >
+                <Edit3 className="w-4 h-4" />
+                <span className="hidden sm:inline">Modifier détails</span>
               </button>
             </div>
           </div>
@@ -845,6 +855,33 @@ const ProductDetail = () => {
         onClose={() => setImageModalOpen(false)}
         onSave={handleSaveProduct}
         onImageUpdated={handleImageUpdated}
+      />
+      <EditDetailsModal
+        product={product}
+        isOpen={detailsModalOpen}
+        onClose={() => setDetailsModalOpen(false)}
+        onSaved={(payload) => {
+          // Mise à jour locale des métas affichées
+          setProduct((prev) => {
+            if (!prev) return prev;
+            const updatedMeta = [...(prev.meta || [])];
+            Object.entries(payload).forEach(([key, val]) => {
+              const metaKey = `_${key}`;
+              const idx = updatedMeta.findIndex((m) => m.meta_key === metaKey);
+              if (idx !== -1)
+                updatedMeta[idx] = {
+                  ...updatedMeta[idx],
+                  meta_value: String(val),
+                };
+              else
+                updatedMeta.push({
+                  meta_key: metaKey,
+                  meta_value: String(val),
+                });
+            });
+            return { ...prev, meta: updatedMeta };
+          });
+        }}
       />
     </div>
   );
