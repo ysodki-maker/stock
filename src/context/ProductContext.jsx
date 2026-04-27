@@ -354,7 +354,42 @@ export const ProductProvider = ({ children }) => {
     },
     []
   );
-
+  const updateProductDetails = useCallback(async (productId, payload) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`${API_BASE}/products/${productId}/details`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData?.message || "Erreur mise à jour détails");
+      }
+      const data = await res.json();
+      // Mise à jour optimiste locale
+      setProducts((prev) =>
+        prev.map((p) => {
+          if (p.id !== productId) return p;
+          const updatedMeta = [...(p.meta || [])];
+          Object.entries(payload).forEach(([key, val]) => {
+            const metaKey = `_${key}`;
+            const idx = updatedMeta.findIndex((m) => m.meta_key === metaKey);
+            if (idx !== -1) updatedMeta[idx] = { ...updatedMeta[idx], meta_value: String(val) };
+            else updatedMeta.push({ meta_key: metaKey, meta_value: String(val) });
+          });
+          return { ...p, meta: updatedMeta };
+        })
+      );
+      return data;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
   /* =======================
    * PROVIDER
    ======================= */
@@ -386,7 +421,7 @@ export const ProductProvider = ({ children }) => {
         fetchEnArrivageProducts,
         updateProductMeta,
         updateProductImage,       // ← NOUVEAU
-
+        updateProductDetails ,
         isSearching,
         setIsSearching,
 
