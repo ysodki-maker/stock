@@ -132,7 +132,7 @@ const handleSubmit = async () => {
           <SectionCard
             icon={<Layers size={18} className="text-indigo-500" />}
             iconBg="#eef2ff"
-            label="NOMBRE DE PIÈCES"
+            label="UGS Interne"
             labelColor="#6366f1"
           >
             <div className="flex items-center gap-2 mt-2">
