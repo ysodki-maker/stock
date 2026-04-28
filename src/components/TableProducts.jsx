@@ -216,7 +216,7 @@ export default function TableProducts({ filteredProducts, getMeta }) {
                 />
                 <SortableTh
                   colKey="stock_acheter"
-                  label="Stock Acheté"
+                  label="Quantité En Arrivage"
                   sortConfig={sortConfig}
                   onSort={handleSort}
                   className="min-w-[120px]"
